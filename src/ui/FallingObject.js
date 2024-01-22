@@ -19,7 +19,7 @@ Phaser.Physics.Arcade.Sprite {
     }
 
     update(time){
-    this.setVelocity(this.speed)
+    this.setVelocity(0, this.speed)
     this.rotation += this.rotationVal
 
     const gameHeight = this.scene.scale.height
