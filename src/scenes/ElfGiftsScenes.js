@@ -2,7 +2,7 @@ import Phaser from 'phaser'
 import FallingObject from '../ui/FallingObject';
 export default class ElfGiftsScenes extends Phaser.Scene {
     constructor(){
-        super('elfs-gifts-scene')
+        super('elf-gifts-scene')
     }
 
     init(){
@@ -24,6 +24,9 @@ export default class ElfGiftsScenes extends Phaser.Scene {
         //inisiasi life
         this.lifeLabel = undefined
         this.life = 3
+
+        //inisiasi gifts
+        this.gifts = undefined
     }
 
     preload(){
@@ -32,6 +35,8 @@ export default class ElfGiftsScenes extends Phaser.Scene {
         
         //load bomb
         this.load.image('bomb', 'images/bombers.png');
+
+        this.load.image('gifts', 'images/gifts.png')
     }
 
     create(){
@@ -73,7 +78,7 @@ export default class ElfGiftsScenes extends Phaser.Scene {
             backgroundColor: 'green'
         }).setDepth(3)
 
-        //overlap overlap player enemy
+        //overlap player enemy
         this.physics.add.overlap(
             this.player,
             this.bombs,
@@ -81,7 +86,18 @@ export default class ElfGiftsScenes extends Phaser.Scene {
             null,
             this
         )
-    
+        
+        //display gifts
+        this.gifts = this.physics.add.group({
+            classType: FallingObject,
+            runChildUpdate: true
+        })
+        this.time.addEvent({
+            delay: 5000,
+            callback: this.spawnGifts,
+            callbackScope: this,
+            loop: true
+        })
     }
 
     update(time){
@@ -127,6 +143,19 @@ export default class ElfGiftsScenes extends Phaser.Scene {
             player.setTint(0xff0000).setAlpha(0.2)
         }else if (this.life == 0){
             this.scene.start('over-scene', {score: this.score})
+        }
+    }
+
+    spawnGifts(){
+        const config = {
+            speed: 20,
+            rotation: 0
+        }
+        //@ts-ignore
+        const gifts = this.gifts.get(0, 0, 'gifts', config)
+        const poisitionX = Phaser.Math.Between(70, 330)
+        if(gifts){
+            gifts.spawn(poisitionX)
         }
     }
 }
