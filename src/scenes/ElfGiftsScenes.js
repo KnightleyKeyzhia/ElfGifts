@@ -27,6 +27,9 @@ export default class ElfGiftsScenes extends Phaser.Scene {
 
         //inisiasi gifts
         this.gifts = undefined
+
+        //inisiasi start game
+        this.startGame = false
     }
 
     preload(){
@@ -36,7 +39,11 @@ export default class ElfGiftsScenes extends Phaser.Scene {
         //load bomb
         this.load.image('bomb', 'images/bombers.png');
 
+        //load gifts
         this.load.image('gifts', 'images/gifts.png')
+
+        //load start game
+        this.load.image('start-btn', 'images/startbutton.png')
     }
 
     create(){
@@ -55,7 +62,7 @@ export default class ElfGiftsScenes extends Phaser.Scene {
         })
 
         this.time.addEvent({
-            delay: Phaser.Math.Between(1000, 5000),
+            delay: Phaser.Math.Between(2000, 5000),
             callback: this.spawnBombs,
             callbackScope: this,
             loop: true
@@ -65,14 +72,14 @@ export default class ElfGiftsScenes extends Phaser.Scene {
         this.cursor = this.input.keyboard.createCursorKeys()
 
         //display label score
-        this.scoreLabel = this.add.text(10, 10, 'Score', {
+        this.scoreLabel = this.add.text(10, 10, 'Score: ', {
             fontSize: '16px',
             fill: 'green',
             backgroundColor: 'red'
         }).setDepth(1)
 
         //menampilkan label life
-        this.lifeLabel = this.add.text(10, 50, 'life', {
+        this.lifeLabel = this.add.text(10, 50, 'life: ', {
             fontSize: '16px',
             fill: 'red',
             backgroundColor: 'green'
@@ -90,14 +97,27 @@ export default class ElfGiftsScenes extends Phaser.Scene {
         //display gifts
         this.gifts = this.physics.add.group({
             classType: FallingObject,
-            runChildUpdate: true
+            runChildUpdate: true,
         })
         this.time.addEvent({
-            delay: 5000,
+            delay: 2000,
             callback: this.spawnGifts,
             callbackScope: this,
             loop: true
         })
+
+        //overlap gifts - player
+        this.physics.add.overlap(
+            this.player,
+            this.gifts,
+            this.increaseScore,
+            null,
+            this
+        )
+
+        //load start game button
+        let startbutton = this.add.image(this.gameHalfWidth,
+            this.gameHalfHeight + 181, 'start-btn').setInteractive()
     }
 
     update(time){
@@ -123,7 +143,7 @@ export default class ElfGiftsScenes extends Phaser.Scene {
     spawnBombs(){
         const config = {
             speed: 40,
-            rotation: 0.1
+            rotation: 0.2
         }
         //@ts-ignore
         const bombs = this.bombs.get(0, 0, 'bomb', config)
@@ -148,14 +168,24 @@ export default class ElfGiftsScenes extends Phaser.Scene {
 
     spawnGifts(){
         const config = {
-            speed: 20,
-            rotation: 0
+            speed: 50,
+            rotation: 0.1
         }
         //@ts-ignore
-        const gifts = this.gifts.get(0, 0, 'gifts', config)
+        const gifts = this.gifts.get(0, 0, 'gifts', config).setScale(0.1)
         const poisitionX = Phaser.Math.Between(70, 330)
         if(gifts){
             gifts.spawn(poisitionX)
         }
+    }
+
+    increaseScore(player, gifts){
+        gifts.die()
+        this.score+=10
+    }
+
+    gameStart(){
+        this.startGame = true
+        this.player.image
     }
 }

@@ -26,6 +26,6 @@ export default class GameOverScene extends Phaser.Scene{
         .setInteractive().setScale(0.2)
         this.replayButton.once('pointerup', () => {
             this.scene.start('elf-gifts-scene')
-        }, this)
+        },  this)
     }
 }

@@ -1,19 +1,20 @@
 import Phaser from 'phaser'
-import MathFighterScenes from './scenes/MathFigtherScenes'
-import GameOverScene from './scenes/GameOverScene'
+
+import ElfGiftsScenes from './scenes/ElfGiftsScenes'
+import GameOverScene from './scenes/GameOverScenes'
 
 const config = {
 	type: Phaser.AUTO,
 	parent: 'app',
-	width: 480,
-	height: 640,
+	width: 400,
+	height: 620,
 	physics: {
 		default: 'arcade',
 		arcade: {
-			gravity: { y: 200 },
+			gravity: { y: 0 },
 		},
 	},
-	scene: [MathFighterScenes, GameOverScene],
+	scene: [ElfGiftsScenes, GameOverScene],
 	scale: {
 		mode: Phaser.Scale.FIT,
 		autoCenter: Phaser.Scale.CENTER_BOTH
