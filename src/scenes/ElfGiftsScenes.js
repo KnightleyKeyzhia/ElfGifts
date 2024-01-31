@@ -30,6 +30,11 @@ export default class ElfGiftsScenes extends Phaser.Scene {
 
         //inisiasi start game
         this.startGame = false
+
+        //inisiasi timer
+        this.timer = 10
+        this.timerLabel = undefined
+        this.countdown = undefined
     }
 
     preload(){
@@ -116,8 +121,18 @@ export default class ElfGiftsScenes extends Phaser.Scene {
         )
 
         //load start game button
-        let startbutton = this.add.image(this.gameHalfWidth,
-            this.gameHalfHeight + 181, 'start-btn').setInteractive()
+        let startbutton = this.add.image(200, 200,
+            'start-btn').setInteractive().setScale(0.5)
+
+        startbutton.on('pointerdown', () => {
+            this.gameStart()
+            startbutton.destroy()
+        }, this)
+
+        //load timer
+        this.timerLabel = this.add.text(166, 70, 'Timer :', {
+            fill: 'yellow'
+        }).setDepth(10)
     }
 
     update(time){
@@ -132,6 +147,11 @@ export default class ElfGiftsScenes extends Phaser.Scene {
 
         //update nilai dari life
         this.lifeLabel.setText('life : ' + this.life)
+
+        //update timer
+        if(this.gameStart = true){
+            this.timerLabel.setText('Timer :'+ this.timer)
+        }
     }
 
     createPlayer(){
@@ -186,6 +206,31 @@ export default class ElfGiftsScenes extends Phaser.Scene {
 
     gameStart(){
         this.startGame = true
-        this.player.image
+        this.lifeLabel = this.add.text(10, 50, 'life: ', {
+            fontSize: '16px',
+            fill: 'red',
+            backgroundColor: 'green'
+        }).setDepth(3)
+        this.scoreLabel = this.add.text(10, 10, 'Score: ', {
+            fontSize: '16px',
+            fill: 'green',
+            backgroundColor: 'red'
+        }).setDepth(1)
+
+        this.countdown = this.time.addEvent({
+            delay: 1000,
+            callback: this.gameOver,
+            callbackScope: this,
+            loop: true
+        })
+
+        this.spawnBombs()
+    }
+
+    gameOver(){
+        this.timer--
+        if(this.timer <0){
+            this.scene.start('over-scene', {score: this.score})
+        }
     }
 }
